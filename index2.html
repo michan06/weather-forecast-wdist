@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<script>
+
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 30, left: 60},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+    
+    //Read the data
+    // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+    d3.json("https://www.data.jma.go.jp/fcd/yoho/wdist/jp/data/wdist/VPFD/130010.json",
+    
+      // When reading the csv, I must format variables:
+    //   function(d){
+    //     console.log(d);
+    //     arrData = []
+    //     for(key in d.areaTimeSeries.timeDefines){
+    //         arrData.push(
+    //             {
+    //                 date: d.areaTimeSeries.timeDefines[key].dateTime, 
+    //                 weather: d.areaTimeSeries.weather[key], 
+    //                 wind_direction: d.areaTimeSeries.wind[key].direction, 
+    //                 wind_speed: d.areaTimeSeries.wind[key].speed
+    //             }
+    //             );
+    //     }
+    //     console.log(arrData);
+    //     return arrData;
+    //     // return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+    //   },
+    
+      // Now I can use this dataset:
+      function(data) {
+        arrData = []
+        for(key in data.areaTimeSeries.timeDefines){
+            arrData.push(
+                {
+                    date: d3.utcParse("%Y-%m-%dT%H:%M:%S%Z")(data.areaTimeSeries.timeDefines[key].dateTime), 
+                    weather: data.areaTimeSeries.weather[key], 
+                    wind_direction: data.areaTimeSeries.wind[key].direction, 
+                    wind_speed: data.areaTimeSeries.wind[key].speed,
+                    temperature: data.pointTimeSeries.temperature[key]
+                }
+                );
+            
+        }
+        data = arrData;
+    
+        // Add X axis --> it is a date format
+        var x = d3.scaleTime()
+          .domain(d3.extent(data, function(d) { return d.date; }))
+          .range([ 0, width ]);
+        svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+    
+        // Add Y axis
+        var y = d3.scaleLinear()
+          .domain([
+              d3.min(data, function(d) { return +d.temperature; })-3
+            , d3.max(data, function(d) { return +d.temperature; })+3])
+          .range([ height, 0 ]);
+        svg.append("g")
+          .call(d3.axisLeft(y));
+    
+        // Add the line
+        svg.append("path")
+          .datum(data)
+          .attr("fill", "none")
+          .attr("stroke", "steelblue")
+          .attr("stroke-width", 1.5)
+          .attr("d", d3.line()
+            .x(function(d) { return x(d.date) })
+            .y(function(d) { return y(d.temperature) })
+            );
+        svg.append("polygon")
+            .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
+            .attr("fill","#3da4ab")　// 円の中の色
+            .attr("stroke-width", 1)　// 線の太さ
+            .attr("stroke","#0e9aa7");   
+    })
+    
+    </script>
