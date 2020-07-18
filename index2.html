@@ -8,7 +8,29 @@
 <div id="my_dataviz"></div>
 
 <script>
-
+    dirMap = {
+        '北': 0,
+        '北北東':22.5,
+        '北東':45,
+        '東北東':67.5,
+        '東':90,
+        '東南東':112.5,
+        '南東':135,
+        '南南東':157.5,
+        '南': 180,
+        '南南西':202.5,
+        '南西':225,
+        '西南西':247.5,
+        '西':270,
+        '西北西':292.5,
+        '北西':315,
+        '北北西':337.5
+        };
+    weatherSymbol = {
+        '晴':'☀',
+        'くもり':'☁',
+        '雨':'☂'
+        };
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
         width = 460 - margin.left - margin.right,
@@ -90,11 +112,30 @@
             .x(function(d) { return x(d.date) })
             .y(function(d) { return y(d.temperature) })
             );
-        svg.append("polygon")
+
+        var svg2 = d3.select("#my_dataviz").select("svg");
+        svg2.data(data).enter().append("polygon")
             .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
             .attr("fill","#3da4ab")　// 円の中の色
             .attr("stroke-width", 1)　// 線の太さ
-            .attr("stroke","#0e9aa7");   
+            .attr("stroke","#0e9aa7");
+        // var svg2 = d3.select("#my_dataviz").append("svg");
+        // svg2.data(data).enter().append("polygon")
+        //     .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
+        //     .attr("fill","#3da4ab")　// 円の中の色
+        //     .attr("stroke-width", 1)　// 線の太さ
+        //     .attr("stroke","#0e9aa7")
+        //     .attr("transform","translate(" + function(d) { console.log(d.date); return x(d.date) } + "," + 0 + ")")
+        //     .attr("transform","rotate(" + function(d) { return dirMap[d.wind_direction]; } + ")" )
+        //     .append("span").text(function(d){return d.weather})            
+        //     ;
+
+        var span = svg.data(data).enter().append("span");
+        // var svg2 = span.append("svg");
+        // var rect = svg2.append("rect");
+        // span.append("span").text(function(d){return d.weather});
+
+
     })
     
     </script>

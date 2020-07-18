@@ -10,7 +10,7 @@ fetch('https://www.data.jma.go.jp/fcd/yoho/wdist/jp/data/wdist/VPFD/130010.json'
     for( key in myJson.areaTimeSeries.timeDefines){
         var newDiv = document.createElement("div");
         var newContent = document.createTextNode(
-            `${moment(period.timeDefines[key].dateTime).format('MM/DD hh:mm')}  ${period.weather[key]} ${point.temperature[key]}℃ ${period.wind[key].direction} ${period.wind[key].speed}m/s `
+            `${moment(period.timeDefines[key].dateTime).format('MM/DD HH:mm')}  ${period.weather[key]} ${point.temperature[key]}℃ ${period.wind[key].direction} ${period.wind[key].speed}m/s `
         );
         newDiv.appendChild(newContent);
         document.body.insertBefore(newDiv,main);
