@@ -102,8 +102,11 @@
           .call(d3.axisBottom(x)
                 .ticks(d3.timeHour.every(3))
                 .tickFormat(d3.timeFormat("%m/%d %H"))
-          );
-    
+                .tickSize(-height)
+          )
+          .call(g => g.selectAll(".tick:not(:first-of-type) line")
+                .attr("stroke-opacity", 0.3)
+                .attr("stroke-dasharray", "2,2"));    
         // Add Y axis
         var y = d3.scaleLinear()
           .domain([
@@ -138,14 +141,29 @@
                 return 0.5;
             }
         }
+        var windColor = function(d){
+            if(d.wind_speed > 25){
+                return "#a30008";
+            }else if(d.wind_speed > 20){
+                return "#ff000d";
+            }else if(d.wind_speed > 15){
+                return "#ff9d00";
+            }else if(d.wind_speed > 10){
+                return "#ffea00";
+            }else if(d.wind_speed > 5){
+                return "#00e1ff";
+            }else{
+                return "#e0e0e0";
+            }
+        }
         var svg2 = d3.select("#graphGroup").append("g")
             .attr("id","windGroup");
         svg2.selectAll("polygon")
             .data(arrData)
             .enter()
             .append("polygon")
-                .attr('points', "0,-10 5,10 -5,10")
-                .attr("fill","#3da4ab")　// 円の中の色
+                .attr('points', "0,-20 10,20 -10,20")
+                .attr("fill",function(d){return windColor(d)})　// 円の中の色
                 // .attr("fill",function(d){return windColor[d.wind_speed]})
                 .attr("stroke-width", 1)　// 線の太さ
                 .attr("stroke","#0e9aa7")
@@ -164,18 +182,29 @@
                 .attr("fill",function(d){return weatherColor[d.weather]})
                 .attr("font-size","45")
                 .attr("transform", function(d) { 
-                        return "translate(" + x(d.date)  + "," + 65 + ")"});
+                        return "translate(" + (x(d.date)+15)  + "," + 65 + ")"});
         var svg2 = d3.select("#graphGroup").append("g")
             .attr("id","dateGroup");
         svg2.selectAll("text")
             .data(arrData)
             .enter()
             .append("text")
-                .text(function(d){return d3.timeFormat("%d日%H時")(d.date);})
+                .text(function(d){
+                    if(d3.timeFormat("%H")(d.date)=="00")
+                        return d3.timeFormat("%d日")(d.date);
+                    else
+                        return d3.timeFormat("%H時")(d.date);
+                    })
                 // .attr("fill",function(d){return weatherColor[d.weather]})
-                .attr("font-size","12")
+                .attr("font-size",function(d){
+                    if(d3.timeFormat("%H")(d.date)=="00")
+                        return "20";
+                    else
+                        return "12";
+                    }
+                )
                 .attr("transform", function(d) { 
-                        return "translate(" + x(d.date)  + "," + 5 + ")"}) ;
+                        return "translate(" + (x(d.date)+25)  + "," + 10 + ")"}) ;
 
     })
     
