@@ -27,13 +27,18 @@
         '北北西':337.5
         };
     weatherSymbol = {
-        '晴':'☀',
+        '晴れ':'☀',
         'くもり':'☁',
         '雨':'☂'
         };
+    weatherColor = {
+        '晴れ':'yellow',
+        'くもり':'gray',
+        '雨':'blue'
+        };
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
-        width = 460 - margin.left - margin.right,
+        width = 700 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
     
     // append the svg object to the body of the page
@@ -42,6 +47,7 @@
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
+        .attr("id","graphGroup")
         .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
     
@@ -112,13 +118,47 @@
             .x(function(d) { return x(d.date) })
             .y(function(d) { return y(d.temperature) })
             );
-
-        var svg2 = d3.select("#my_dataviz").select("svg");
-        svg2.data(data).enter().append("polygon")
-            .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
-            .attr("fill","#3da4ab")　// 円の中の色
-            .attr("stroke-width", 1)　// 線の太さ
-            .attr("stroke","#0e9aa7");
+        var windTranslate = function(d){
+            if(d.wind_speed > 25){
+                return 2;
+            }else if(d.wind_speed > 20){
+                return 1.5;
+            }else if(d.wind_speed > 15){
+                return 1.25;
+            }else if(d.wind_speed > 10){
+                return 1.0;
+            }else if(d.wind_speed > 5){
+                return 0.75;
+            }else{
+                return 0.5;
+            }
+        }
+        var svg2 = d3.select("#graphGroup").append("g")
+            .attr("id","windGroup");
+        svg2.selectAll("polygon")
+            .data(arrData)
+            .enter()
+            .append("polygon")
+                .attr('points', "5,0 10,20 0,20")
+                .attr("fill","#3da4ab")　// 円の中の色
+                .attr("stroke-width", 1)　// 線の太さ
+                .attr("stroke","#0e9aa7")
+                .attr("transform", function(d) { 
+                    return "translate(" + x(d.date)  + "," + 320 + ") " 
+                    + "rotate(" + dirMap[d.wind_direction] + ")"
+                    + "scale(" + windTranslate(d) + ")" 
+                })
+                // .attr("transform",function(d) { 
+                //     return "rotate(" + dirMap[d.wind_direction] + ")" })
+        svg2.selectAll("text")
+            .data(arrData)
+            .enter()
+            .append("text")
+                .text(function(d){return weatherSymbol[d.weather]})
+                .attr("fill",function(d){return weatherColor[d.weather]})
+                .attr("font-size","40")
+                .attr("transform", function(d) { 
+                        return "translate(" + x(d.date)  + "," + 50 + ")"}) 
         // var svg2 = d3.select("#my_dataviz").append("svg");
         // svg2.data(data).enter().append("polygon")
         //     .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
