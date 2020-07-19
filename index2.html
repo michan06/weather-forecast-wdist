@@ -97,7 +97,10 @@
           .range([ 0, width ]);
         svg.append("g")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
+          .call(d3.axisBottom(x)
+                .ticks(d3.timeHour.every(3))
+                .tickFormat(d3.timeFormat("%m/%d %H"))
+          );
     
         // Add Y axis
         var y = d3.scaleLinear()
@@ -141,40 +144,36 @@
             .append("polygon")
                 .attr('points', "5,0 10,20 0,20")
                 .attr("fill","#3da4ab")　// 円の中の色
+                // .attr("fill",function(d){return windColor[d.wind_speed]})
                 .attr("stroke-width", 1)　// 線の太さ
                 .attr("stroke","#0e9aa7")
                 .attr("transform", function(d) { 
-                    return "translate(" + x(d.date)  + "," + 320 + ") " 
+                    return "translate(" + (x(d.date)+25)  + "," + 320 + ") " 
                     + "rotate(" + dirMap[d.wind_direction] + ")"
                     + "scale(" + windTranslate(d) + ")" 
                 })
-                // .attr("transform",function(d) { 
-                //     return "rotate(" + dirMap[d.wind_direction] + ")" })
+        var svg2 = d3.select("#graphGroup").append("g")
+            .attr("id","watherGroup");
         svg2.selectAll("text")
             .data(arrData)
             .enter()
             .append("text")
                 .text(function(d){return weatherSymbol[d.weather]})
                 .attr("fill",function(d){return weatherColor[d.weather]})
-                .attr("font-size","40")
+                .attr("font-size","45")
                 .attr("transform", function(d) { 
-                        return "translate(" + x(d.date)  + "," + 50 + ")"}) 
-        // var svg2 = d3.select("#my_dataviz").append("svg");
-        // svg2.data(data).enter().append("polygon")
-        //     .attr("points", "15,0 30,60 0,60")   // xy座標を複数指定
-        //     .attr("fill","#3da4ab")　// 円の中の色
-        //     .attr("stroke-width", 1)　// 線の太さ
-        //     .attr("stroke","#0e9aa7")
-        //     .attr("transform","translate(" + function(d) { console.log(d.date); return x(d.date) } + "," + 0 + ")")
-        //     .attr("transform","rotate(" + function(d) { return dirMap[d.wind_direction]; } + ")" )
-        //     .append("span").text(function(d){return d.weather})            
-        //     ;
-
-        var span = svg.data(data).enter().append("span");
-        // var svg2 = span.append("svg");
-        // var rect = svg2.append("rect");
-        // span.append("span").text(function(d){return d.weather});
-
+                        return "translate(" + x(d.date)  + "," + 65 + ")"});
+        var svg2 = d3.select("#graphGroup").append("g")
+            .attr("id","dateGroup");
+        svg2.selectAll("text")
+            .data(arrData)
+            .enter()
+            .append("text")
+                .text(function(d){return d3.timeFormat("%d日%H時")(d.date);})
+                // .attr("fill",function(d){return weatherColor[d.weather]})
+                .attr("font-size","12")
+                .attr("transform", function(d) { 
+                        return "translate(" + x(d.date)  + "," + 5 + ")"}) ;
 
     })
     
