@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
-
+</head>
+<body>
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
@@ -32,12 +34,12 @@
         '雨':'☂'
         };
     weatherColor = {
-        '晴れ':'yellow',
+        '晴れ':'red',
         'くもり':'gray',
         '雨':'blue'
         };
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    var margin = {top: 10, right: 10, bottom: 20, left: 20},
         width = 700 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
     
@@ -142,7 +144,7 @@
             .data(arrData)
             .enter()
             .append("polygon")
-                .attr('points', "5,0 10,20 0,20")
+                .attr('points', "0,-10 5,10 -5,10")
                 .attr("fill","#3da4ab")　// 円の中の色
                 // .attr("fill",function(d){return windColor[d.wind_speed]})
                 .attr("stroke-width", 1)　// 線の太さ
