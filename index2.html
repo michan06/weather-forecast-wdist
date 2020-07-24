@@ -39,7 +39,7 @@
         '雨':'blue'
         };
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 10, bottom: 20, left: 20},
+    var margin = {top: 10, right: 10, bottom: 20, left: 30},
         width = 700 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
     
@@ -114,6 +114,7 @@
             , d3.max(data, function(d) { return +d.temperature; })+3])
           .range([ height, 0 ]);
         svg.append("g")
+          .style("font", "20px times")
           .call(d3.axisLeft(y));
     
         // Add the line
