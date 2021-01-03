@@ -128,30 +128,30 @@
             .y(function(d) { return y(d.temperature) })
             );
         var windTranslate = function(d){
-            if(d.wind_speed > 25){
+            if(d.wind_speed >= 6){
                 return 2;
-            }else if(d.wind_speed > 20){
+            }else if(d.wind_speed == 5){
                 return 1.5;
-            }else if(d.wind_speed > 15){
+            }else if(d.wind_speed == 4){
                 return 1.25;
-            }else if(d.wind_speed > 10){
+            }else if(d.wind_speed == 3){
                 return 1.0;
-            }else if(d.wind_speed > 5){
+            }else if(d.wind_speed == 2){
                 return 0.75;
             }else{
                 return 0.5;
             }
         }
         var windColor = function(d){
-            if(d.wind_speed > 25){
+            if(d.wind_speed >= 6){
                 return "#a30008";
-            }else if(d.wind_speed > 20){
+            }else if(d.wind_speed == 5){
                 return "#ff000d";
-            }else if(d.wind_speed > 15){
+            }else if(d.wind_speed == 4){
                 return "#ff9d00";
-            }else if(d.wind_speed > 10){
+            }else if(d.wind_speed == 3){
                 return "#ffea00";
-            }else if(d.wind_speed > 5){
+            }else if(d.wind_speed == 2){
                 return "#00e1ff";
             }else{
                 return "#e0e0e0";
